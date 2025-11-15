@@ -139,7 +139,7 @@ namespace GameKillingDemonn
         public int CurFrame = 0;
         public int TotalFrames;
 
-        public int FrameInterval = 400;
+        public int FrameInterval = 100;
         int timer = 0;
 
         public bool FlipX = false;
@@ -358,13 +358,13 @@ namespace GameKillingDemonn
 
         public Enemy()
         {
-            move = new Sprite("Assets/Enemy/moveE.png", 137, 97, loop: true);
-            die = new Sprite("Assets/Enemy/deadE.png", 143, 98, loop: false);
+            move = new Sprite("Assets/Enemy/moveE.png", 48, 32, loop: true);
+            die = new Sprite("Assets/Enemy/deadE.png", 48, 32, loop: false);
 
             current = move;
 
             X = 450;
-            Y = GameForm.GROUND_Y - move.FrameH - 20;
+            Y = GameForm.GROUND_Y - move.FrameH -15;
         }
 
         public Rectangle HitBox =>
@@ -410,7 +410,7 @@ namespace GameKillingDemonn
             }
             else
             {
-                die.FlipX = dir == -1;
+                die.FlipX = dir == 1;
                 // Enemy chết → chỉ chạy die animation
                 current.Update(dt);
 
