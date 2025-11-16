@@ -23,11 +23,13 @@ namespace GameKillingDemonn
         Graphics backG;
 
         int difficulty = 0;
+        int score = 0;
+        int loseLine = 12;
 
         Stopwatch timer = new Stopwatch();
         long last;
 
-        bool left, right, jump, attack, fast;
+        bool left, right, jump, attack, fast, lostGame, isShowMessage;
         public GameForm()
         {
             this.ClientSize = new Size(800, 480);
@@ -88,13 +90,24 @@ namespace GameKillingDemonn
             player.Update(left, right, jump, dt, fast);
             enemy.Update(dt);
 
+            if(!enemy.IsDead && enemy.X <= loseLine)
+            {
+                lostGame = true;
+
+            }
+
+            if (lostGame && !isShowMessage)
+            {
+                isShowMessage = true;
+                GameOver();
+                return;
+            }
+
             // player tấn công enemy
             if (player.isAttacking && !enemy.IsDead && !enemy.IsRemoved)
             {
                 if (player.AttackBox.IntersectsWith(enemy.HitBox))
                     enemy.TakeDamage(1);
-
-                
             }
             else if (!player.isAttacking && !enemy.IsDead && !enemy.IsRemoved)
             {
@@ -105,6 +118,8 @@ namespace GameKillingDemonn
             if (enemy.getIsRemove())
             {
                 difficulty++; // mỗi lần enemy chết = tăng level
+                score++;
+
 
                 // Tăng độ khó theo từng chỉ số:
                 int hp = 25; // máu tăng
@@ -120,6 +135,22 @@ namespace GameKillingDemonn
                 Invalidate();
         }
 
+        private void GameOver()
+        {
+            using (var dlg = new GameOverForm(score))
+            {
+                dlg.ShowDialog(this); 
+
+                if (dlg.Retry)
+                {
+                    RestartGame();
+                }
+                else
+                {
+                    Application.Exit();
+                }
+            }
+        }
         private void OnPaint(object sender, PaintEventArgs e)
         {
             backG.Clear(Color.Black);
@@ -128,7 +159,17 @@ namespace GameKillingDemonn
             enemy.Draw(backG);
             player.Draw(backG);
 
+            backG.DrawString("Score: " + score, new Font("Arial", 16), Brushes.White, 10, 10);
+
+            backG.DrawLine(Pens.Red, loseLine, 0, loseLine, this.ClientSize.Height);
+
             e.Graphics.DrawImage(backBuffer, 0, 0);
+        }
+
+
+        private void RestartGame()
+        {
+            Application.Restart();
         }
 
         private void GameForm_Load(object sender, EventArgs e)
