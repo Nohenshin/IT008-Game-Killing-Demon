@@ -16,15 +16,21 @@ namespace GameKillingDemonn
 
         public bool IsDead = false;
         public bool IsRemoved = false;
+        public bool IsHit = false;
+
+        public int hitTimer = 0;
+        public const int HIT_DURATION = 1000;
 
         public Sprite move;
         public Sprite die;
+        public Sprite hit;
         public Sprite current;
 
         public Enemy(float X, int hp, float dir1)
         {
             move = new Sprite("Assets/Enemy/moveE.png", 48, 32, loop: true);
             die = new Sprite("Assets/Enemy/deadE.png", 48, 32, loop: false);
+            hit = new Sprite("Assets/Enemy/deadE.png", 48, 32, loop: false);
 
             current = move;
 
@@ -42,8 +48,6 @@ namespace GameKillingDemonn
             return IsDead;
         }
 
-
-
         public bool getIsRemove()
         {
             return IsRemoved;
@@ -58,22 +62,46 @@ namespace GameKillingDemonn
             if (hp <= 0)
             {
                 IsDead = true;
+                IsHit = false;
 
                 // CHỈ GÁN 1 LẦN DUY NHẤT
                 current = die;
                 current.Reset();
-
                 // giữ đáy khi đổi animation frame-height khác
                 float bottom = Y + move.FrameH;
                 Y = bottom - die.FrameH;
             }
+            else
+            {
+                IsHit = true;
+                hitTimer = 0;
+                current = hit;
+                current.Reset();
+            }
+
+            
+
         }
 
         public void Update(int dt)
         {
             if (IsRemoved) return;
 
-            if (!IsDead)
+            if(IsHit)
+            {
+                hitTimer += dt;
+                current.Update(dt);
+
+                if(hitTimer >= HIT_DURATION || current.CurFrame >= current.TotalFrames - 1)
+                {
+                    IsHit = false;
+                    if (IsDead) current = die;
+                    else current = move;
+                    current.Reset();
+                }    
+            }
+
+            if (!IsDead && !IsHit)
             {
                 // Update chỉ move
                 X += dir1 * 0.08f * dt;
@@ -87,7 +115,7 @@ namespace GameKillingDemonn
                 current = move;
                 current.Update(dt);
             }
-            else
+            else if (IsDead)
             {
                 die.FlipX = dir == 1;
                 // Enemy chết → chỉ chạy die animation

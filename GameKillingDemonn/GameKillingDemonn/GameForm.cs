@@ -93,6 +93,8 @@ namespace GameKillingDemonn
             {
                 if (player.AttackBox.IntersectsWith(enemy.HitBox))
                     enemy.TakeDamage(1);
+
+                
             }
             else if (!player.isAttacking && !enemy.IsDead && !enemy.IsRemoved)
             {
@@ -106,7 +108,7 @@ namespace GameKillingDemonn
 
                 // Tăng độ khó theo từng chỉ số:
                 int hp = 25; // máu tăng
-                float dir1 = -1.2f - difficulty * 0.15f; // tốc độ tăng dần (di chuyển nhanh hơn)
+                float dir1 = -1.2f - difficulty * 0.13f; // tốc độ tăng dần (di chuyển nhanh hơn)
                 int spawnX = 700 - difficulty * 20; // spawn gần hơn
 
                 // Giới hạn không cho spawn lọt vào người chơi
