@@ -22,10 +22,12 @@ namespace GameKillingDemonn
         Bitmap backBuffer;
         Graphics backG;
 
+        int difficulty = 0;
+
         Stopwatch timer = new Stopwatch();
         long last;
 
-        bool left, right, jump, attack, fastRight, fastLeft;
+        bool left, right, jump, attack, fast;
         public GameForm()
         {
             this.ClientSize = new Size(800, 480);
@@ -35,7 +37,7 @@ namespace GameKillingDemonn
             // Load game objects
             map = new GameMap();
             player = new Player();
-            enemy = new Enemy();
+            enemy = new Enemy(700, 25, -1);
 
             // Double buffer
             backBuffer = new Bitmap(800, 480);
@@ -58,36 +60,18 @@ namespace GameKillingDemonn
 
         private void OnKeyDown(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Left)
-            {
-                left = true;
-            }
-            if (e.KeyCode == Keys.Right)
-            {
-                right = true;
-            }
-            if(e.KeyCode == Keys.S)
-            {
-                if (left) fastLeft = true;
-                if (right) fastRight = true;
-            }
+            if (e.KeyCode == Keys.Left) left = true;
+            if (e.KeyCode == Keys.Right) right = true;
+            if (e.KeyCode == Keys.S) fast = true;
             if (e.KeyCode == Keys.Up) jump = true;
             if (e.KeyCode == Keys.X) attack = true;
         }
 
         private void OnKeyUp(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode == Keys.Left)
-            {
-                left = false;
-                fastLeft = false;
-            }
-            if (e.KeyCode == Keys.Right)
-            {
-                right = false;
-                fastRight = false;
-            }
-            if (e.KeyCode == Keys.S) fastRight = fastLeft = false;
+            if (e.KeyCode == Keys.Left) left = false;
+            if (e.KeyCode == Keys.Right) right = false;
+            if (e.KeyCode == Keys.S)  fast = false;
             if (e.KeyCode == Keys.Up) jump = false;
             if (e.KeyCode == Keys.X) attack = false;
         }
@@ -101,7 +85,7 @@ namespace GameKillingDemonn
             if (attack)
                 player.StartAttack();
 
-            player.Update(left, right, jump, dt, fastLeft, fastRight);
+            player.Update(left, right, jump, dt, fast);
             enemy.Update(dt);
 
             // player tấn công enemy
@@ -118,8 +102,17 @@ namespace GameKillingDemonn
 
             if (enemy.getIsRemove())
             {
-                for(int i = 0; i < 2; i++)
-                    enemy = new Enemy();
+                difficulty++; // mỗi lần enemy chết = tăng level
+
+                // Tăng độ khó theo từng chỉ số:
+                int hp = 25; // máu tăng
+                float dir1 = -1.2f - difficulty * 0.15f; // tốc độ tăng dần (di chuyển nhanh hơn)
+                int spawnX = 700 - difficulty * 20; // spawn gần hơn
+
+                // Giới hạn không cho spawn lọt vào người chơi
+                if (spawnX < 300) spawnX = 300;
+
+                enemy = new Enemy(spawnX, hp, dir1);
             }
 
                 Invalidate();

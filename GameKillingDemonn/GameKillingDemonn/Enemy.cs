@@ -11,8 +11,8 @@ namespace GameKillingDemonn
     {
         public float X, Y;
         int dir = -1;
-
-        int hp = 50;
+        public int hp;
+        float dir1;
 
         public bool IsDead = false;
         public bool IsRemoved = false;
@@ -21,14 +21,16 @@ namespace GameKillingDemonn
         public Sprite die;
         public Sprite current;
 
-        public Enemy()
+        public Enemy(float X, int hp, float dir1)
         {
             move = new Sprite("Assets/Enemy/moveE.png", 48, 32, loop: true);
             die = new Sprite("Assets/Enemy/deadE.png", 48, 32, loop: false);
 
             current = move;
 
-            X = 450;
+            this.hp = hp;
+            this.X = X;
+            this.dir1 = dir1;
             Y = GameForm.GROUND_Y - move.FrameH - 15;
         }
 
@@ -74,10 +76,10 @@ namespace GameKillingDemonn
             if (!IsDead)
             {
                 // Update chỉ move
-                X += dir * 0.08f * dt;
+                X += dir1 * 0.08f * dt;
 
-                if (X > 550)
-                    dir *= -1;
+                //if (X > 550)
+                //    dir *= -1;
 
                 move.FlipX = dir == 1;
 

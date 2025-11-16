@@ -71,16 +71,15 @@ namespace GameKillingDemonn
 
         }
 
-        public void Update(bool left, bool right, bool jump, int dt, bool fastLeft, bool fastRight)
+        public void Update(bool left, bool right, bool jump, int dt, bool fast)
         {
             if (isRemove) return;
-            float speed = 0.15f * dt;
-            float fastSpeed = 0.23f * dt;
+            float normalSpeed = 0.15f * dt;
+            float fastSpeed = 0.35f * dt;
 
             if (!isAttacking && !isDead)
             {
-                if (fastLeft) { X -= fastSpeed; facing = -1; }
-                if (fastRight) { X += fastSpeed; facing = 1; }
+                float speed = fast ? fastSpeed : normalSpeed;
                 if (left) { X -= speed; facing = -1; }
                 if (right) { X += speed; facing = 1; }
 
