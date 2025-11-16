@@ -122,8 +122,8 @@ namespace GameKillingDemonn
 
 
                 // Tăng độ khó theo từng chỉ số:
-                int hp = 25; // máu tăng
-                float dir1 = -1.2f - difficulty * 0.13f; // tốc độ tăng dần (di chuyển nhanh hơn)
+                int hp = 25 + difficulty * 2; // máu tăng
+                float dir1 = -1.2f - difficulty * 0.16f; // tốc độ tăng dần (di chuyển nhanh hơn)
                 int spawnX = 700 - difficulty * 20; // spawn gần hơn
 
                 // Giới hạn không cho spawn lọt vào người chơi
